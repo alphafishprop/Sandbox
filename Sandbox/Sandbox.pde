@@ -7,13 +7,13 @@ ArrayList<ArrayList<Integer>> mousePos;
 
 void setup() {
   size(1200, 800);
+  background(255);
   mouseX1=-1;
   mouseY1=-1;
   mousePos=new ArrayList();
 }
 
 void draw() {
-  background(255);
   for (ArrayList<Integer> coors : mousePos) {
     int x1=coors.get(0);
     int y1=coors.get(1);
@@ -40,6 +40,7 @@ void mouseClicked() {
 }
 
 void mouseMoved() {
+  background(255);
   if (mouseX1!=-1) {
     line(mouseX1,mouseY1,mouseX,mouseY);
   }
