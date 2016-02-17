@@ -44,7 +44,6 @@ void setup() {
 }
 
 void draw() {
-  background(255);
   drawObjects();
   for (ArrayList<Integer> coors : mousePos) {
     int x1=coors.get(0);
@@ -88,6 +87,7 @@ void mouseClicked() {
 }
 
 void mouseMoved() {
+  background(255);
   draw();
   if (mouseX1!=-1) {
     line(mouseX1, mouseY1, mouseX, mouseY);
