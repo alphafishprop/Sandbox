@@ -19,21 +19,38 @@ int[][] roomEdges=new int[][]{
 };
 
 int[][] chair=new int[][]{
-    new int[]{1}, 
-    new int[]{251, 528, 252, 448}, 
-    new int[]{252, 448, 310, 448}, 
-    new int[]{311, 448, 310, 525}, 
-    new int[]{267, 499, 267, 425}, 
-    new int[]{329, 498, 330, 426}, 
-    new int[]{253, 448, 267, 426}, 
-    new int[]{311, 448, 330, 427}, 
-    new int[]{330, 427, 267, 426}, 
-    new int[]{267, 426, 267, 354}, 
-    new int[]{266, 354, 331, 354}, 
-    new int[]{331, 354, 329, 426}, 
-    };
+  new int[]{1}, 
+  new int[]{251, 528, 252, 448}, 
+  new int[]{252, 448, 310, 448}, 
+  new int[]{311, 448, 310, 525}, 
+  new int[]{267, 499, 267, 425}, 
+  new int[]{329, 498, 330, 426}, 
+  new int[]{253, 448, 267, 426}, 
+  new int[]{311, 448, 330, 427}, 
+  new int[]{330, 427, 267, 426}, 
+  new int[]{267, 426, 267, 354}, 
+  new int[]{266, 354, 331, 354}, 
+  new int[]{331, 354, 329, 426}, 
+};
 
-int[][][] roomObjects=new int[][][]{roomEdges,chair};
+int[][] face_smile=new int[][]{
+ new int[]{1},
+ new int[]{730,355,825,355},
+ new int[]{825,355,775,390},
+ new int[]{730,355,775,390},
+};
+
+int[][][] room_lines=new int[][][]{roomEdges, chair, face_smile};
+
+int[][] face_circles=new int[][]{
+  new int[]{1}, 
+  new int[]{775, 333, 900, 332}, 
+  new int[]{800, 310, 832, 310}, 
+  new int[]{750, 310, 782, 310}, 
+};
+
+int[][][] room_circles=new int[][][]{face_circles};
+
 
 void setup() {
   size(1200, 800);
@@ -41,10 +58,12 @@ void setup() {
   mouseX1=-1;
   mouseY1=-1;
   mousePos=new ArrayList();
+  noFill();
 }
 
 void draw() {
-  drawObjects();
+  drawLines();
+  drawCircles();
   for (ArrayList<Integer> coors : mousePos) {
     int x1=coors.get(0);
     int y1=coors.get(1);
@@ -54,17 +73,37 @@ void draw() {
   }
 }
 
-void drawObjects() {
-  for (int[][] object : roomObjects) {
-    if (object[0][0]==1) {
-      for (int i=1; i<object.length; i++) {
-        int[] coors=object[i];
+void drawLines() {
+  for (int[][] object_lines : room_lines) {
+    if (object_lines[0][0]==1) {
+      for (int i=1; i<object_lines.length; i++) {
+        int[] coors=object_lines[i];
         int x1=coors[0];
         int y1=coors[1];
         int x2=coors[2];
         int y2=coors[3];
         //println("x1,y1: "+x1+","+y1+"x2,y2: "+x2+","+y2);
         line(x1, y1, x2, y2);
+      }
+    }
+  }
+}
+
+void drawCircles(){
+  for(int[][] object_circles:room_circles){
+    if(object_circles[0][0]==1){
+      for(int i=1;i<object_circles.length;i++){
+        int[] circle=object_circles[i];
+        int x1=circle[0];
+        int y1=circle[1];
+        int x2=circle[2];
+        int y2=circle[3];
+        
+        int dX=x2-x1;
+        int dY=y2-y1;
+        int diameter=(int)Math.sqrt(Math.pow(dX,2)+Math.pow(dY,2));
+        
+        ellipse(x1,y1,diameter,diameter);
       }
     }
   }
