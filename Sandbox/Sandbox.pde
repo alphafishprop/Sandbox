@@ -34,10 +34,10 @@ int[][] chair=new int[][]{
 };
 
 int[][] face_smile=new int[][]{
- new int[]{1},
- new int[]{730,355,825,355},
- new int[]{825,355,775,390},
- new int[]{730,355,775,390},
+  new int[]{1}, 
+  new int[]{730, 355, 825, 355}, 
+  new int[]{825, 355, 775, 390}, 
+  new int[]{730, 355, 775, 390}, 
 };
 
 int[][][] room_lines=new int[][][]{roomEdges, chair, face_smile};
@@ -51,7 +51,6 @@ int[][] face_circles=new int[][]{
 
 int[][][] room_circles=new int[][][]{face_circles};
 
-
 void setup() {
   size(1200, 800);
   background(255);
@@ -62,6 +61,7 @@ void setup() {
 }
 
 void draw() {
+  background(255);
   drawLines();
   drawCircles();
   for (ArrayList<Integer> coors : mousePos) {
@@ -70,6 +70,9 @@ void draw() {
     int x2=coors.get(2);
     int y2=coors.get(3);
     line(x1, y1, x2, y2);
+  }
+  if (mouseX1!=-1) {
+    line(mouseX1, mouseY1, mouseX, mouseY);
   }
 }
 
@@ -89,21 +92,21 @@ void drawLines() {
   }
 }
 
-void drawCircles(){
-  for(int[][] object_circles:room_circles){
-    if(object_circles[0][0]==1){
-      for(int i=1;i<object_circles.length;i++){
+void drawCircles() {
+  for (int[][] object_circles : room_circles) {
+    if (object_circles[0][0]==1) {
+      for (int i=1; i<object_circles.length; i++) {
         int[] circle=object_circles[i];
         int x1=circle[0];
         int y1=circle[1];
         int x2=circle[2];
         int y2=circle[3];
-        
+
         int dX=x2-x1;
         int dY=y2-y1;
-        int diameter=(int)Math.sqrt(Math.pow(dX,2)+Math.pow(dY,2));
-        
-        ellipse(x1,y1,diameter,diameter);
+        int diameter=(int)Math.sqrt(Math.pow(dX, 2)+Math.pow(dY, 2));
+
+        ellipse(x1, y1, diameter, diameter);
       }
     }
   }
@@ -125,24 +128,55 @@ void mouseClicked() {
   }
 }
 
-void mouseMoved() {
-  background(255);
-  draw();
-  if (mouseX1!=-1) {
-    line(mouseX1, mouseY1, mouseX, mouseY);
-  }
-}
-
 void keyPressed() {
   if (key=='c'&&mousePos.size()>0) {
     mousePos.remove(mousePos.size()-1);
   } else if (key=='p') {
     printObjects();
+  } else if(key==CODED){
+    if(keyCode==LEFT){
+      moveHoriz(face_circles,-1);
+      moveHoriz(face_smile,-1);
+    } else if(keyCode==RIGHT){
+      moveHoriz(face_circles,1);
+      moveHoriz(face_smile,1);
+    } else if(keyCode==UP){
+      moveVert(face_circles,-1);
+      moveVert(face_smile,-1);
+    } else if(keyCode==DOWN){
+      moveVert(face_circles,1);
+      moveVert(face_smile,1);
+    }
   }
 }
 
 void printObjects() {
   for (ArrayList<Integer> coors : mousePos) {
     println("new int[]{"+coors.get(0)+","+coors.get(1)+","+coors.get(2)+","+coors.get(3)+"},");
+  }
+}
+
+void moveHoriz(int[][] object, int moveAmount){
+  for(int j=1;j<object.length;j++){
+    int[] part=object[j];
+    for(int i=0;i<part.length;i+=2){
+      part[i]+=moveAmount;
+    }
+  }
+}
+
+void moveVert(int[][] object, int moveAmount){
+  for(int j=1;j<object.length;j++){
+    int[] part=object[j];
+    for(int i=1;i<part.length;i+=2){
+      part[i]+=moveAmount;
+    }
+  }
+}
+
+void rotate(int[][] object,double angle){
+  for(int i=1;i<object.length;i++){
+    int[] part=object[i];
+    
   }
 }
