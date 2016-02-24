@@ -8,18 +8,21 @@ MidiBus myBus=new MidiBus(this, input, output);
 //                                i    x    ii   iii  x    iv   x    v    vi   x    x    vii  viii
 double[][] markov=new double[][]{{.10, .00, .00, .00, .00, .00, .00, .00, .00, .00, .00, .00, .00}};
 
-int baseNote;
+//constants
+int baseNote=60;
+int melodyVolume=120;
+int melodyLength=250;
+int chordVolume=100;
+
+//chord vars
 int currentNote;
 int beatTotal;
 int currentNoteLength;
 
+//song length vars
 int tonicCount=0;
 int tonicTotal=8;
 
-int chordVolume=100;
-
-int melodyVolume=120;
-int melodyLength=250;
 
 void setup() {
   size(500, 500);
@@ -31,10 +34,7 @@ void draw(){
   int[] chord=chooseChord();
   
   playChord(chord);
-  
-  int melody=choseMelody(chord);
-  
-  playMelody(melody);
+  playMelody(chord);
   
   
   updateBeat();
@@ -42,10 +42,23 @@ void draw(){
 }
 
 int[] chooseChord(){
-  int tonic=choseTonic();
+  int tonic=chooseTonic();
   int third=getThird(tonic);
   int fifth=getFifth(tonic);
   int octave=getOctave(tonic);
+}
+
+int chooseTonic(){
+  double random=Math.random();
+  double total=0;
+  for(int i=0;i<markov[currentNote-baseNote].length;i++){
+    total+=markov[currentNote-baseNote][i];
+    if(random>total){
+      return i+baseNote;
+    }
+  }
+  
+  throw new RuntimeException("Markov matrix does not sum to 1");
 }
 
 void playChord(int[] chord){
@@ -53,10 +66,10 @@ void playChord(int[] chord){
   int third=chord[1];
   int fifth=chord[2];
   int octave=chord[3];
-  Note note1=new Note(channel,base,chordVolume,noteLength);
-  Note note2=new Note(channel,third,chordVolume,noteLength);
-  Note note3=new Note(channel,fifth,chordVolume,noteLength);
-  Note note4=new Note(channel,fifth,chordVolume,noteLength);
+  Note note1=new Note(channel,base,chordVolume,currentNoteLength);
+  Note note2=new Note(channel,third,chordVolume,currentNoteLength);
+  Note note3=new Note(channel,fifth,chordVolume,currentNoteLength);
+  Note note4=new Note(channel,octave,chordVolume,currentNoteLength);
   
   myBus.sendNoteOn(note1);
   myBus.sendNoteOn(note2);
@@ -64,6 +77,17 @@ void playChord(int[] chord){
   myBus.sendNoteOn(note4);
 }
 
-void playMelody(int melody){
-  
+void playMelody(int[] melodyNotes){
+  for(int total=0;total<currentNoteLength;total+=melodyLength){
+  int melody;
+  if(Math.random()<.75){
+    melody=melodyNotes[(int)(Math.random()*melodyNotes.length)];
+  }
+  else{
+    melody=baseNote+(int)(Math.random()*12);
+  }
+  Note melodyNote=new Note(channel,melody,melodyVolume,melodyLength);
+  myBus.sendNoteOn(melodyNote);
+  delay(melodyLength);
+  }
 }
